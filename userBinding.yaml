@@ -1,11 +1,11 @@
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: user2-binding
-  namespace: user2
+  name: user-binding
+  namespace: user1
 subjects: 
 - kind: User
-  name: user2
+  name: user1
   apiGroup: ""
 roleRef:
   kind: ClusterRole
