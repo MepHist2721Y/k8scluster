@@ -1,0 +1,37 @@
+  GNU nano 6.2                                                                                                                    dep.yaml                                                                                                                              
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tensorflow-deployment
+spec:
+  replicas: 1  # Number of replicas
+  selector:
+    matchLabels:
+      app: tensorflow
+  template:
+    metadata:
+      labels:
+        app: tensorflow
+    spec:
+      hostNetwork: true
+      nodeSelector:
+        dgxserver: "true"  # Ensure the pod is scheduled on the same node as PV
+      tolerations:
+      - key: "node-role.kubernetes.io/control-plane"
+        operator: "Exists"
+        effect: "NoSchedule"
+      containers:
+      - name: tensorflow
+        image: nvcr.io/nvidia/tensorflow:24.04-tf2-py3-igpu
+        command: ["/bin/bash","-c","--"]
+        args: ["while true; do sleep 1;done;"]
+        resources:
+          limits:
+            nvidia.com/mig-1g.5gb: 1
+        volumeMounts:
+        - mountPath: /workspace/notebooks
+          name: notebooks
+      volumes:
+      - name: notebooks
+        persistentVolumeClaim:
+          claimName: tensorflow-pvc
