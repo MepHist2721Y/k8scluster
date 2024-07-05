@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: tensorflow-pv
+spec:
+  capacity:
+    storage: 10Gi  # Adjust size as needed
+  accessModes:
+    - ReadWriteOnce  # Access mode suitable for local storage
+  persistentVolumeReclaimPolicy: Retain  # Policy to retain the data even after PV is released
+  storageClassName: local-storage  # Custom storage class for local PVs
+  local:
+    path: /home/hostname/datatest  # Path on the node
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: dgxserver # Node's hostname
+              operator: In
+              values:
+                - "true"
